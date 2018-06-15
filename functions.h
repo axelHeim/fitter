@@ -1,16 +1,45 @@
 #include <math.h>
 
+using namespace std;
 
-double sigmaE(double energy) {
-  double c = 0.02;           // constant Term
-  double s = 0.06;           // stochastic term
+void calculateCentreOfGrav(vector<double> E, vector<double> x, vector<double> y, double cog_pos[2])
+{
+  double gewichteterOrt = 0;
+  double totalEnergy = 0;
 
-  double sigmaE = energy * sqrt(pow(c, 2) + s / sqrt(energy));
+  for(uint i = 0; i< E.size(); i++)
+  {
+    totalEnergy += E[i];
+  }
+
+
+  for(uint i = 0; i< E.size(); i++)
+  {
+    gewichteterOrt += E[i]*x[i];
+  }
+  cog_pos[0] = gewichteterOrt / totalEnergy;
+
+  gewichteterOrt = 0;
+
+  for(uint i = 0; i< E.size(); i++)
+  {
+    gewichteterOrt += E[i]*y[i];
+  }
+  cog_pos[1] = gewichteterOrt / totalEnergy;
+
+}
+
+double sigmaE(double energy)//aus Fig.49 compassSetupForPhysicsWithHadronBeams, ohne 2ten term
+ {
+  double c1 = 0.055;
+  double c2 = 0.015;
+
+  double sigmaE = c1 * sqrt(energy) + c2 * energy;
   return sigmaE;
 }
 
 
-
+//nimmt Koordinaten im CoG Frame an
 double cdf(double x, double y, double args[4]) {
   double pi = 3.14159265359;
   double a1 = args[0];
@@ -26,4 +55,37 @@ double cdf(double x, double y, double args[4]) {
                (a2 * (atan(x / b2) + atan(y / b2) +
                       atan(x * y / (b2 * sqrt(b2 * b2 + x * x + y * y))))));
   return result;
+}
+
+//gibt EnergieDeponierung in Zelle zurück, nimmt normale Koordinaten an
+double energyDeposition(double x_cell, double y_cell, double cog_pos[2], double args[4])
+{
+  double cellsize = 38.3;
+  double halfCell = cellsize / 2.0;
+  double x_0 = x_cell - cog_pos[0];
+  double y_0 = y_cell - cog_pos[1];       //position in CoG frame
+
+  double energyDeposit = cdf(x_0 + halfCell, y_0 + halfCell, args) +
+                        cdf(x_0 - halfCell, y_0 - halfCell, args)  -
+                        cdf(x_0 - halfCell, y_0 + halfCell, args)  -
+                        cdf(x_0 + halfCell, y_0 - halfCell, args);
+
+  return energyDeposit;
+}
+
+
+double chisquare(vector<double> E, vector<double> x, vector<double> y,
+                double cog_pos[2], double args[4])
+{
+  double E_calc;
+  double chisquare = 0;
+
+
+  for(uint i = 0; i < E.size(); i++)
+  {
+      E_calc = energyDeposition(x[i],y[i],cog_pos,args);
+      chisquare += pow((E[i] - E_calc),2)/pow(sigmaE(E[i]),2);
+  }
+
+  return chisquare;
 }
