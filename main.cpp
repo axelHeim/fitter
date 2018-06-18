@@ -10,11 +10,13 @@ using namespace std;
 
 int main(){
     vector <double> E;
+    vector <double> E_normalized;
     vector <double> x;
     vector <double> y;
     int counter = 0;
 
     double E_storage;
+    double E_norm_storage;
     double x_storage;
     double y_storage;
     ifstream file;  // Datei-Handle
@@ -23,15 +25,16 @@ int main(){
     while (!file.eof())          // Solange noch Daten vorliegen
     {
         getline(file, line);        // Lese eine Zeile
-        //cout << line << endl;    // Zeige sie auf dem Bildschirm
+        cout << line << endl;    // Zeige sie auf dem Bildschirm
         if(line.compare("----") != 0)
         {
           istringstream parser(line);
-          parser >> E_storage >> x_storage >> y_storage ;
+          parser >> E_norm_storage >> E_storage >> x_storage >> y_storage ;
+          E_normalized.push_back(E_norm_storage);
           E.push_back(E_storage);
           x.push_back(x_storage);
           y.push_back(y_storage);
-          //cout << E[counter] << x[counter] << y[counter] << '\n';
+          cout << E_normalized[counter] << E[counter] << x[counter] << y[counter] << '\n';
           counter++;
         }
     }
