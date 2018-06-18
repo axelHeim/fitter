@@ -2,6 +2,44 @@
 
 using namespace std;
 
+double sigmaE(double);
+double cdf(double, double, const double *);
+double energyDeposition(double, double, double *, const double *);
+
+function<double(const double *)> chisquare_output(function <double(const double *)> chifunc)
+{
+  function<double(const double *)> out = [chifunc](const double * args) -> double
+          {return chifunc(args);};
+  return out;
+}
+
+function<double(const double *)> chisquare(vector<double> E_norm, vector<double> E,
+                vector<double> x, vector<double> y, double cog_pos[2])
+{
+  function<double(const double *)> out = [E_norm, E, x, y, cog_pos](const double * args)
+                                                -> double {
+    double E_calc_norm;
+    double chisquare = 0;
+
+
+    for(uint i = 0; i < E.size(); i++)
+    {
+        E_calc_norm = energyDeposition(x[i],y[i],cog_pos,args);
+        chisquare += pow((E_norm[i] - E_calc_norm),2)/pow(sigmaE(E[i]),2);
+    }
+
+    return chisquare;
+  };
+
+
+
+
+  return out;
+}
+
+
+
+
 void calculateCentreOfGrav(vector<double> E, vector<double> x, vector<double> y, double cog_pos[2])
 {
   double gewichteterOrt = 0;
@@ -29,6 +67,12 @@ void calculateCentreOfGrav(vector<double> E, vector<double> x, vector<double> y,
 
 }
 
+
+
+
+
+
+
 double sigmaE(double energy)//aus Fig.49 compassSetupForPhysicsWithHadronBeams, ohne 2ten term
  {
   double c1 = 0.055;
@@ -40,7 +84,8 @@ double sigmaE(double energy)//aus Fig.49 compassSetupForPhysicsWithHadronBeams, 
 
 
 //nimmt Koordinaten im CoG Frame an
-double cdf(double x, double y, double args[4]) {
+  double cdf(double x, double y, const double args[4])
+  {
   double pi = 3.14159265359;
   double a1 = args[0];
   double b1 = args[1];
@@ -58,7 +103,7 @@ double cdf(double x, double y, double args[4]) {
 }
 
 //gibt EnergieDeponierung in Zelle zurück, nimmt normale Koordinaten an
-double energyDeposition(double x_cell, double y_cell, double cog_pos[2], double args[4])
+double energyDeposition(double x_cell, double y_cell, double cog_pos[2], const double args[4])
 {
   double cellsize = 38.3;
   double halfCell = cellsize / 2.0;
@@ -74,17 +119,17 @@ double energyDeposition(double x_cell, double y_cell, double cog_pos[2], double 
 }
 
 
-double chisquare(vector<double> E, vector<double> x, vector<double> y,
+double chisquare_old(vector<double> E_norm, vector<double> E, vector<double> x, vector<double> y,
                 double cog_pos[2], double args[4])
 {
-  double E_calc;
+  double E_calc_norm;
   double chisquare = 0;
 
 
   for(uint i = 0; i < E.size(); i++)
   {
-      E_calc = energyDeposition(x[i],y[i],cog_pos,args);
-      chisquare += pow((E[i] - E_calc),2)/pow(sigmaE(E[i]),2);
+      E_calc_norm = energyDeposition(x[i],y[i],cog_pos,args);
+      chisquare += pow((E_norm[i] - E_calc_norm),2)/pow(sigmaE(E[i]),2);
   }
 
   return chisquare;
