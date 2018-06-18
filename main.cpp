@@ -50,21 +50,6 @@ int main(){
     double xy_CoG[2];
     calculateCentreOfGrav(E,x,y,xy_CoG);
 
-    //cout << xy_CoG[0] << " " << xy_CoG[1] << '\n';
-
-
-
-
-    //cout << energyDeposition(xy_CoG[0],xy_CoG[1], xy_CoG ,args) << '\n';
-    //cout << cdf(200,200,args) << '\n';
-
-    //cout << chisquare_old(E_norm,E,x,y, xy_CoG, args) << '\n';
-
-
-
-
-    // function<int (int)> func = [](int i) { return i+4; };
-    // cout << "func: " << func(6) << '\n';
 
     function<double(const double *)> chisquare_data =
                       chisquare(E_norm, E, x, y, xy_CoG);
@@ -88,6 +73,7 @@ int main(){
 
     min->Minimize();
 
+    min->PrintResults();
 
 
   return 0;
