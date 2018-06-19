@@ -9,7 +9,7 @@
 #include "Math/Minimizer.h"
 #include "Math/MinimizerOptions.h"
 #include "fit_functions.h"
-#include "fit_validation.h"
+#include "fitvalidation.h"
 
 
 using namespace std;
@@ -17,6 +17,7 @@ using namespace std;
 int main(){
     vector <double> E; vector <double> E_norm; vector <double> x; vector <double> y;
     int counter = 0;
+    int numbEvents = 0;
 
     double E_storage; double E_norm_storage; double x_storage; double y_storage;
     ifstream file;  // Datei-Handle
@@ -26,6 +27,8 @@ int main(){
     {
         getline(file, line);        // Lese eine Zeile
         //cout << line << endl;    // Zeige sie auf dem Bildschirm
+        if(line.compare("----") == 0)
+        {numbEvents++;}
         if(line.compare("----") != 0)
         {
           istringstream parser(line);
@@ -50,7 +53,7 @@ int main(){
                       chisquare(E_norm, E, x, y, xy_CoG);
 
     function<double(const double *)> chisquare_result = chisquare_output(chisquare_data);
-    //const double args[4] = {1.09,10.52,-0.09,97.1233};
+
 
     ROOT::Math::Minimizer *min =
         ROOT::Math::Factory::CreateMinimizer("Minuit2", "Migrad");
@@ -60,7 +63,7 @@ int main(){
     ROOT::Math::Functor f =
         ROOT::Math::Functor(chisquare_result, 3); // function of type double
     min->SetFunction(f);
-    min->SetVariable(0, "a1", 1.01, 1e-5);
+    min->SetVariable(0, "a1", 1.01, 1e-5); 
     min->SetVariable(1, "b1", 15.0, 1e-5);
     min->SetVariable(2, "b2", +100.0, 1e-5);
     min->Minimize();
@@ -68,8 +71,8 @@ int main(){
     const double args[3] = {min->X()[0],min->X()[1],min->X()[2]};
 
 
-
-
+    fit_validation(E_norm,E,x,y,xy_CoG,args, numbEvents);
+    cout << xy_CoG[0] << " " << xy_CoG[1] << '\n';
 
 
 

@@ -120,7 +120,7 @@ double energyDeposition(double x_cell, double y_cell, double cog_pos[2], const d
 
 
 double chisquare_old(vector<double> E_norm, vector<double> E, vector<double> x, vector<double> y,
-                double cog_pos[2], double args[3])
+                double cog_pos[2],const double args[3])
 {
   double E_calc_norm;
   double chisquare = 0;
