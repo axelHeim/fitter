@@ -49,7 +49,7 @@ int main(){
     calculateCentreOfGrav(E,x,y,xy_CoG);
 
 
-    function<double(const double *)> chisquare_data =
+    function<double(const double *)> chisquare_data = 
                       chisquare(E_norm, E, x, y, xy_CoG);
 
     function<double(const double *)> chisquare_result = chisquare_output(chisquare_data);
@@ -63,7 +63,7 @@ int main(){
     ROOT::Math::Functor f =
         ROOT::Math::Functor(chisquare_result, 3); // function of type double
     min->SetFunction(f);
-    min->SetVariable(0, "a1", 1.01, 1e-5); 
+    min->SetVariable(0, "a1", 1.01, 1e-5);
     min->SetVariable(1, "b1", 15.0, 1e-5);
     min->SetVariable(2, "b2", +100.0, 1e-5);
     min->Minimize();

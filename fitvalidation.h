@@ -31,7 +31,7 @@ void fit_validation(vector<double> E_norm, vector<double> E, vector<double> x, v
   for(int i = 0; i < numb_xCells; i++)
   {
     fileX << xPositions[i] << " " << xEnergyFractions[i] << " "
-          << xEnergyError[i]/totalEnergyDeposit << " "
+          << xEnergyError[i] << " "
           << endl;
   }
   fileX.close();
@@ -51,7 +51,7 @@ void fit_validation(vector<double> E_norm, vector<double> E, vector<double> x, v
   for(int i = 0; i < numb_yCells; i++)
   {
     fileY << yPositions[i] << " " << yEnergyFractions[i] << " "
-          << yEnergyError[i]/totalEnergyDeposit << " "
+          << yEnergyError[i] << " "
           << endl;
   }
   fileY.close();
