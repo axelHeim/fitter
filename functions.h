@@ -84,13 +84,13 @@ double sigmaE(double energy)//aus Fig.49 compassSetupForPhysicsWithHadronBeams, 
 
 
 //nimmt Koordinaten im CoG Frame an
-  double cdf(double x, double y, const double args[4])
+  double cdf(double x, double y, const double args[3])
   {
   double pi = 3.14159265359;
   double a1 = args[0];
   double b1 = args[1];
-  double a2 = args[2];
-  double b2 = args[3];
+  double a2 = 1.0 - a1;
+  double b2 = args[2];
 
 
   double result = 1.0 / 4.0 +
@@ -103,7 +103,7 @@ double sigmaE(double energy)//aus Fig.49 compassSetupForPhysicsWithHadronBeams, 
 }
 
 //gibt EnergieDeponierung in Zelle zurück, nimmt normale Koordinaten an
-double energyDeposition(double x_cell, double y_cell, double cog_pos[2], const double args[4])
+double energyDeposition(double x_cell, double y_cell, double cog_pos[2], const double args[3])
 {
   double cellsize = 38.3;
   double halfCell = cellsize / 2.0;
@@ -120,7 +120,7 @@ double energyDeposition(double x_cell, double y_cell, double cog_pos[2], const d
 
 
 double chisquare_old(vector<double> E_norm, vector<double> E, vector<double> x, vector<double> y,
-                double cog_pos[2], double args[4])
+                double cog_pos[2], double args[3])
 {
   double E_calc_norm;
   double chisquare = 0;

@@ -14,16 +14,10 @@
 using namespace std;
 
 int main(){
-    vector <double> E;
-    vector <double> E_norm;
-    vector <double> x;
-    vector <double> y;
+    vector <double> E; vector <double> E_norm; vector <double> x; vector <double> y;
     int counter = 0;
 
-    double E_storage;
-    double E_norm_storage;
-    double x_storage;
-    double y_storage;
+    double E_storage; double E_norm_storage; double x_storage; double y_storage;
     ifstream file;  // Datei-Handle
     string line;
     file.open("E_x_y_MCdata_GeV_mm.dat", ios::in); // Öffne Datei aus Parameter
@@ -63,17 +57,18 @@ int main(){
     min->SetTolerance(0.001);
     min->SetPrintLevel(2);
     ROOT::Math::Functor f =
-        ROOT::Math::Functor(chisquare_result, 4); // function of type double
+        ROOT::Math::Functor(chisquare_result, 3); // function of type double
     min->SetFunction(f);
     min->SetVariable(0, "a1", 1.01, 1e-5);
     min->SetVariable(1, "b1", 15.0, 1e-5);
-    min->SetVariable(2, "a2", -0.01, 1e-5);
-    min->SetVariable(3, "b2", +100.0, 1e-5);
-
-
+    min->SetVariable(2, "b2", +100.0, 1e-5);
     min->Minimize();
 
-    min->PrintResults();
+    const double args[3] = {min->X()[0],min->X()[1],min->X()[2]};
+    cout << min->X()[0] << '\n';
+
+
+
 
 
   return 0;
