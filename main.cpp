@@ -8,7 +8,8 @@
 #include "Math/Functor.h"
 #include "Math/Minimizer.h"
 #include "Math/MinimizerOptions.h"
-#include "functions.h"
+#include "fit_functions.h"
+#include "fit_validation.h"
 
 
 using namespace std;
@@ -65,7 +66,8 @@ int main(){
     min->Minimize();
 
     const double args[3] = {min->X()[0],min->X()[1],min->X()[2]};
-    cout << min->X()[0] << '\n';
+
+
 
 
 
