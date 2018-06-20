@@ -13,22 +13,22 @@ function<double(const double *)> chisquare_output(function <double(const double 
   return out;
 }
 
-function<double(const double *)> chisquare(vector<double> E_norm, vector<double> E,
+function<double(const double *)> chisquare(double totalEnergyDeposit, vector<double> E,
                 vector<double> x, vector<double> y, double cog_pos[2])
 {
-  function<double(const double *)> out = [E_norm, E, x, y, cog_pos](const double * args)
+  function<double(const double *)> out = [totalEnergyDeposit, E, x, y, cog_pos](const double * args)
                                                 -> double {
-    double E_calc_norm;
-    double chisquare = 0;
+  double E_calc_norm;
+  double chisquare = 0;
 
 
-    for(uint i = 0; i < E.size(); i++)
-    {
-        E_calc_norm = energyDeposition(x[i],y[i],cog_pos,args);
-        chisquare += pow((E_norm[i] - E_calc_norm),2)/pow(sigmaE(E[i]),2);
-    }
+  for(uint i = 0; i < E.size(); i++)
+  {
+      E_calc_norm = energyDeposition(x[i],y[i],cog_pos,args);
+      chisquare += pow((E[i] - E_calc_norm*totalEnergyDeposit),2)/pow(sigmaE(E[i]),2);
+  }
 
-    return chisquare;
+  return chisquare;
   };
 
 
@@ -119,7 +119,7 @@ double energyDeposition(double x_cell, double y_cell, double cog_pos[2], const d
 }
 
 
-double chisquare_old(vector<double> E_norm, vector<double> E, vector<double> x, vector<double> y,
+double chisquare_old(double totalEnergyDeposit, vector<double> E, vector<double> x, vector<double> y,
                 double cog_pos[2],const double args[3])
 {
   double E_calc_norm;
@@ -129,7 +129,7 @@ double chisquare_old(vector<double> E_norm, vector<double> E, vector<double> x, 
   for(uint i = 0; i < E.size(); i++)
   {
       E_calc_norm = energyDeposition(x[i],y[i],cog_pos,args);
-      chisquare += pow((E_norm[i] - E_calc_norm),2)/pow(sigmaE(E[i]),2);
+      chisquare += pow((E[i] - E_calc_norm*totalEnergyDeposit),2)/pow(sigmaE(E[i]),2);
   }
 
   return chisquare;

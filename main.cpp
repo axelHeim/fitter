@@ -41,7 +41,15 @@ int main(){
           counter++;
         }
     }
-    file.close();                // Datei wieder schließen
+    file.close();                // Datei wieder schließen 
+
+
+
+    double totalEnergyDeposit;
+    for(int j = 0; j < E.size(); j++)
+    {
+      totalEnergyDeposit += E[j]/numbEvents;
+    }
 
 
 
@@ -49,8 +57,8 @@ int main(){
     calculateCentreOfGrav(E,x,y,xy_CoG);
 
 
-    function<double(const double *)> chisquare_data = 
-                      chisquare(E_norm, E, x, y, xy_CoG);
+    function<double(const double *)> chisquare_data =
+                      chisquare(totalEnergyDeposit, E, x, y, xy_CoG);
 
     function<double(const double *)> chisquare_result = chisquare_output(chisquare_data);
 

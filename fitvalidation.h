@@ -9,13 +9,13 @@ void fit_validation(vector<double> E_norm, vector<double> E, vector<double> x, v
                 double cog_pos[2], const double args[3], int numbEvents)
 {
   int numb_xCells = 65; int numb_yCells = 48; double cellsize = 38.3;
-  double yPositions[48]; double yEnergyFractions[48]; double yEnergyError[48];
-  double xPositions[65]; double xEnergyFractions[65]; double xEnergyError[65];
+  double yPositions[48]; double yEnergy[48]; double yEnergyError[48];
+  double xPositions[65]; double xEnergy[65]; double xEnergyError[65];
 
 
 
-  double y_row = getXEnergyFractions(xEnergyFractions, xEnergyError, E_norm,E, x, y, cog_pos);
-  double x_column = getYEnergyFractions(yEnergyFractions, yEnergyError, E_norm,E, x, y, cog_pos);
+  double y_row = getXEnergyFractions(xEnergy, xEnergyError, E_norm,E, x, y, cog_pos);
+  double x_column = getYEnergyFractions(yEnergy, yEnergyError, E_norm,E, x, y, cog_pos);
   getXYPositions(cog_pos, xPositions, yPositions);
 
   double totalEnergyDeposit;
@@ -30,7 +30,7 @@ void fit_validation(vector<double> E_norm, vector<double> E, vector<double> x, v
   fileX.open("fit_validationX.dat", ios::out);
   for(int i = 0; i < numb_xCells; i++)
   {
-    fileX << xPositions[i] << " " << xEnergyFractions[i] << " "
+    fileX << xPositions[i] << " " << xEnergy[i] << " "
           << xEnergyError[i] << " "
           << endl;
   }
@@ -41,7 +41,7 @@ void fit_validation(vector<double> E_norm, vector<double> E, vector<double> x, v
   for(int i = -20000; i < 20000; i++)
   {
     fileXfunc << i*0.05 - cog_pos[0] << " "
-          << energyDeposition((i*0.05), (-900.05 + y_row*cellsize),cog_pos,args)
+          << energyDeposition((i*0.05), (-900.05 + y_row*cellsize),cog_pos,args) * totalEnergyDeposit
           << endl;
   }
   fileXfunc.close();
@@ -50,7 +50,7 @@ void fit_validation(vector<double> E_norm, vector<double> E, vector<double> x, v
   fileY.open("fit_validationY.dat", ios::out);
   for(int i = 0; i < numb_yCells; i++)
   {
-    fileY << yPositions[i] << " " << yEnergyFractions[i] << " "
+    fileY << yPositions[i] << " " << yEnergy[i] << " "
           << yEnergyError[i] << " "
           << endl;
   }
@@ -61,7 +61,7 @@ void fit_validation(vector<double> E_norm, vector<double> E, vector<double> x, v
   for(int i = -20000; i < 20000; i++)
   {
     fileYfunc << i*0.05 - cog_pos[1] << " "
-          << energyDeposition((-1206.45 + x_column*cellsize), (i*0.05),cog_pos,args)
+          << energyDeposition((-1206.45 + x_column*cellsize), (i*0.05),cog_pos,args) * totalEnergyDeposit
           << endl;
   }
   fileYfunc.close();
@@ -83,7 +83,7 @@ void getXYPositions(double cog_pos[2], double xPositions[65], double yPositions[
   }
 }
 
-double getYEnergyFractions(double* yEnergyFractions, double* yEnergyError, vector<double> E_norm,
+double getYEnergyFractions(double* yEnergy, double* yEnergyError, vector<double> E_norm,
                 vector<double> E, vector<double> x, vector<double> y, double cog_pos[2])
 {
   double cellsize = 38.3;
@@ -95,7 +95,7 @@ double getYEnergyFractions(double* yEnergyFractions, double* yEnergyError, vecto
   cout << x_column << " " << x_pos << '\n';
 
   for(int i = 0; i < numb_yCells; i++)
-  {yEnergyFractions[i] = 0; yEnergyError[i] = 0;}
+  {yEnergy[i] = 0; yEnergyError[i] = 0;}
   for(int i = 0; i < numb_yCells; i++)
   {
     int zaehler = 0;
@@ -103,13 +103,13 @@ double getYEnergyFractions(double* yEnergyFractions, double* yEnergyError, vecto
     {
       if(fabs(x[j] - x_pos) < 2.5 && fabs((- 900.05 + i*cellsize) - y[j]) < 2.5)
       {
-        yEnergyFractions[i] += E_norm[j];
+        yEnergy[i] += E[j];
         yEnergyError[i] += sigmaE(E[j]);
         zaehler++;
       }
     }
     if(zaehler != 0){
-    yEnergyFractions[i] = yEnergyFractions[i] / zaehler;
+    yEnergy[i] = yEnergy[i] / zaehler;
     yEnergyError[i] = yEnergyError[i] / zaehler;
     }
   }
@@ -117,7 +117,7 @@ double getYEnergyFractions(double* yEnergyFractions, double* yEnergyError, vecto
 }
 
 
-double getXEnergyFractions(double* xEnergyFractions, double* xEnergyError, vector<double> E_norm,
+double getXEnergyFractions(double* xEnergy, double* xEnergyError, vector<double> E_norm,
                 vector<double> E, vector<double> x, vector<double> y, double cog_pos[2])
 {
   double cellsize = 38.3;
@@ -130,7 +130,7 @@ double getXEnergyFractions(double* xEnergyFractions, double* xEnergyError, vecto
 
 
   for(int i = 0; i < numb_xCells; i++)
-  {xEnergyFractions[i] = 0; xEnergyError[i] = 0;}
+  {xEnergy[i] = 0; xEnergyError[i] = 0;}
 
   for(int i = 0; i < numb_xCells; i++)
   {
@@ -140,13 +140,13 @@ double getXEnergyFractions(double* xEnergyFractions, double* xEnergyError, vecto
       if(fabs(y[j] - y_pos) < 2.5 && fabs((-1206.45 + i*cellsize) - x[j]) < 2.5)
       {
         //cout << E_norm[j] << '\n';
-        xEnergyFractions[i] += E_norm[j];
+        xEnergy[i] += E[j];
         xEnergyError[i] += sigmaE(E[j]);
         zaehler++;
       }
     }
     if(zaehler != 0){
-    xEnergyFractions[i] = xEnergyFractions[i] / zaehler;
+    xEnergy[i] = xEnergy[i] / zaehler;
     xEnergyError[i] = xEnergyError[i] / zaehler;
     }
   }
