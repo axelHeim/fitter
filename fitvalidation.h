@@ -1,6 +1,6 @@
 double getXEnergyFractions(double* , double* ,
                 vector<double> , vector<double> , vector<double> , double *);
-double getYEnergyFractions(double* , double* , 
+double getYEnergyFractions(double* , double* ,
                 vector<double> , vector<double> , vector<double> , double *);
 void getXYPositions(double *, double *, double *);
 
@@ -12,7 +12,7 @@ void fit_validation( vector<double> E, vector<double> x, vector<double> y,
   double yPositions[48]; double yEnergy[48]; double yEnergyError[48];
   double xPositions[65]; double xEnergy[65]; double xEnergyError[65];
 
-
+  
 
   double y_row = getXEnergyFractions(xEnergy, xEnergyError,E, x, y, cog_pos);
   double x_column = getYEnergyFractions(yEnergy, yEnergyError,E, x, y, cog_pos);

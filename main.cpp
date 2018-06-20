@@ -11,6 +11,8 @@
 #include "fit_functions.h"
 #include "fitvalidation.h"
 
+int degreesOfFreedom(vector <double> , int);
+
 
 using namespace std;
 
@@ -63,13 +65,14 @@ int main(){
     function<double(const double *)> chisquare_result = chisquare_output(chisquare_data);
 
 
+    const int numbOfArguments = 5;
     ROOT::Math::Minimizer *min =
         ROOT::Math::Factory::CreateMinimizer("Minuit2", "Migrad");
     min->SetMaxFunctionCalls(10000); // if one wants a max calls default=420?
     min->SetTolerance(0.001);
     min->SetPrintLevel(2);
     ROOT::Math::Functor f =
-        ROOT::Math::Functor(chisquare_result, 3); // function of type double
+        ROOT::Math::Functor(chisquare_result, numbOfArguments); // function of type double
     min->SetFunction(f);
     min->SetVariable(0, "a1", 1.01, 1e-5);
     min->SetVariable(1, "b1", 3.0, 1e-5);
@@ -78,13 +81,29 @@ int main(){
     min->SetVariable(4, "b3", +200.0, 1e-5);
     min->Minimize();
 
-    const double args[5] = {min->X()[0],min->X()[1],min->X()[2],min->X()[3],min->X()[4]};
+    const double args[numbOfArguments] = {min->X()[0],min->X()[1],min->X()[2],min->X()[3],min->X()[4]};
 
 
     fit_validation(E,x,y,xy_CoG,args, numbEvents);
     cout << xy_CoG[0] << " " << xy_CoG[1] << '\n';
 
+    cout << "number of degrees of freedom (ndf): " << degreesOfFreedom(E, numbOfArguments) << '\n';
+    //cout << chisquare_old(totalEnergyDeposit, E,x,y, xy_CoG, args) << '\n';
+    cout << "chi2/ndf: " << chisquare_old(totalEnergyDeposit, E,x,y, xy_CoG, args)/degreesOfFreedom(E, numbOfArguments) << '\n';
 
 
   return 0;
+}
+
+
+int degreesOfFreedom(vector <double> E, int numbOfArguments)
+{
+  int degreesOfFreedom = 0;
+  for(int i = 0; i < E.size(); i++)
+  {
+    degreesOfFreedom++;
+  }
+  degreesOfFreedom -= numbOfArguments;
+
+  return degreesOfFreedom;
 }
