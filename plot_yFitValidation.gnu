@@ -8,6 +8,7 @@ set xlabel 'distance of cell centre to centre of gravity / mm'
 
 set xrange[-110:110]
 set logscale y
+set yrange[0.08:1000]
 
 
 

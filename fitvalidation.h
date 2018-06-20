@@ -33,6 +33,10 @@ void fit_validation( vector<double> E, vector<double> x, vector<double> y,
   fileX.open("fit_validationX.dat", ios::out);
   for(int i = 0; i < numb_xCells; i++)
   {
+    // cout << xPositions[i] << " " << xEnergy[i] << " "
+    //       << xEnergyError[i] << " "
+    //       << endl;
+    //
     fileX << xPositions[i] << " " << xEnergy[i] << " "
           << xEnergyError[i] << " "
           << endl;
@@ -47,6 +51,7 @@ void fit_validation( vector<double> E, vector<double> x, vector<double> y,
           << energyDeposition((i*0.05), (+ centreOfLeftBottomCell_Yaxis + y_row*cellsize),cog_pos,args) * totalEnergyDeposit
           << endl;
   }
+
   fileXfunc.close();
 
   fstream fileY;

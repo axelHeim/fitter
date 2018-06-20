@@ -8,7 +8,7 @@
 #include "Math/Functor.h"
 #include "Math/Minimizer.h"
 #include "Math/MinimizerOptions.h"
-#include "fit_functions.h" 
+#include "fit_functions.h"
 #include "fitvalidation.h"
 
 int degreesOfFreedom(vector <double> , int);
@@ -46,7 +46,7 @@ int main(){
     file.close();                // Datei wieder schließen
 
 
-
+ 
     double totalEnergyDeposit;
     for(int j = 0; j < E.size(); j++)
     {
