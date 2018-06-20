@@ -1,12 +1,12 @@
-double getXEnergyFractions(double* , double* , vector<double> ,
+double getXEnergyFractions(double* , double* ,
                 vector<double> , vector<double> , vector<double> , double *);
-double getYEnergyFractions(double* , double* , vector<double> ,
+double getYEnergyFractions(double* , double* , 
                 vector<double> , vector<double> , vector<double> , double *);
 void getXYPositions(double *, double *, double *);
 
 
-void fit_validation(vector<double> E_norm, vector<double> E, vector<double> x, vector<double> y,
-                double cog_pos[2], const double args[3], int numbEvents)
+void fit_validation( vector<double> E, vector<double> x, vector<double> y,
+                double cog_pos[2], const double args[5], int numbEvents)
 {
   int numb_xCells = 65; int numb_yCells = 48; double cellsize = 38.3;
   double yPositions[48]; double yEnergy[48]; double yEnergyError[48];
@@ -14,8 +14,8 @@ void fit_validation(vector<double> E_norm, vector<double> E, vector<double> x, v
 
 
 
-  double y_row = getXEnergyFractions(xEnergy, xEnergyError, E_norm,E, x, y, cog_pos);
-  double x_column = getYEnergyFractions(yEnergy, yEnergyError, E_norm,E, x, y, cog_pos);
+  double y_row = getXEnergyFractions(xEnergy, xEnergyError,E, x, y, cog_pos);
+  double x_column = getYEnergyFractions(yEnergy, yEnergyError,E, x, y, cog_pos);
   getXYPositions(cog_pos, xPositions, yPositions);
 
   double totalEnergyDeposit;
@@ -83,7 +83,7 @@ void getXYPositions(double cog_pos[2], double xPositions[65], double yPositions[
   }
 }
 
-double getYEnergyFractions(double* yEnergy, double* yEnergyError, vector<double> E_norm,
+double getYEnergyFractions(double* yEnergy, double* yEnergyError,
                 vector<double> E, vector<double> x, vector<double> y, double cog_pos[2])
 {
   double cellsize = 38.3;
@@ -117,7 +117,7 @@ double getYEnergyFractions(double* yEnergy, double* yEnergyError, vector<double>
 }
 
 
-double getXEnergyFractions(double* xEnergy, double* xEnergyError, vector<double> E_norm,
+double getXEnergyFractions(double* xEnergy, double* xEnergyError,
                 vector<double> E, vector<double> x, vector<double> y, double cog_pos[2])
 {
   double cellsize = 38.3;

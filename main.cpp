@@ -41,7 +41,7 @@ int main(){
           counter++;
         }
     }
-    file.close();                // Datei wieder schließen 
+    file.close();                // Datei wieder schließen
 
 
 
@@ -72,14 +72,16 @@ int main(){
         ROOT::Math::Functor(chisquare_result, 3); // function of type double
     min->SetFunction(f);
     min->SetVariable(0, "a1", 1.01, 1e-5);
-    min->SetVariable(1, "b1", 15.0, 1e-5);
-    min->SetVariable(2, "b2", +100.0, 1e-5);
+    min->SetVariable(1, "b1", 3.0, 1e-5);
+    min->SetVariable(2, "a2", -0.05, 1e-5);
+    min->SetVariable(3, "b2", +2.0, 1e-5);
+    min->SetVariable(4, "b3", +200.0, 1e-5);
     min->Minimize();
 
-    const double args[3] = {min->X()[0],min->X()[1],min->X()[2]};
+    const double args[5] = {min->X()[0],min->X()[1],min->X()[2],min->X()[3],min->X()[4]};
 
 
-    fit_validation(E_norm,E,x,y,xy_CoG,args, numbEvents);
+    fit_validation(E,x,y,xy_CoG,args, numbEvents);
     cout << xy_CoG[0] << " " << xy_CoG[1] << '\n';
 
 
