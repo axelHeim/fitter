@@ -1,3 +1,6 @@
+#include "constants.h"
+
+
 double getXEnergyFractions(double* , double* ,
                 vector<double> , vector<double> , vector<double> , double *);
 double getYEnergyFractions(double* , double* ,
@@ -12,7 +15,7 @@ void fit_validation( vector<double> E, vector<double> x, vector<double> y,
   double yPositions[48]; double yEnergy[48]; double yEnergyError[48];
   double xPositions[65]; double xEnergy[65]; double xEnergyError[65];
 
-  
+
 
   double y_row = getXEnergyFractions(xEnergy, xEnergyError,E, x, y, cog_pos);
   double x_column = getYEnergyFractions(yEnergy, yEnergyError,E, x, y, cog_pos);
@@ -41,7 +44,7 @@ void fit_validation( vector<double> E, vector<double> x, vector<double> y,
   for(int i = -20000; i < 20000; i++)
   {
     fileXfunc << i*0.05 - cog_pos[0] << " "
-          << energyDeposition((i*0.05), (-900.05 + y_row*cellsize),cog_pos,args) * totalEnergyDeposit
+          << energyDeposition((i*0.05), (+ centreOfLeftBottomCell_Yaxis + y_row*cellsize),cog_pos,args) * totalEnergyDeposit
           << endl;
   }
   fileXfunc.close();
@@ -61,7 +64,7 @@ void fit_validation( vector<double> E, vector<double> x, vector<double> y,
   for(int i = -20000; i < 20000; i++)
   {
     fileYfunc << i*0.05 - cog_pos[1] << " "
-          << energyDeposition((-1206.45 + x_column*cellsize), (i*0.05),cog_pos,args) * totalEnergyDeposit
+          << energyDeposition((+ centreOfLeftBottomCell_Xaxis + x_column*cellsize), (i*0.05),cog_pos,args) * totalEnergyDeposit
           << endl;
   }
   fileYfunc.close();
@@ -75,11 +78,11 @@ void getXYPositions(double cog_pos[2], double xPositions[65], double yPositions[
   int numb_xCells = 65; int numb_yCells = 48;
   for(int i = 0; i < numb_xCells; i++)
   {
-    xPositions[i] = (i * cellsize - 1206.45)  - cog_pos[0];
+    xPositions[i] = (i * cellsize + centreOfLeftBottomCell_Xaxis)  - cog_pos[0];
   }
   for(int i = 0; i < numb_yCells; i++)
   {
-    yPositions[i] = (i * cellsize - 900.05)  - cog_pos[1];
+    yPositions[i] = (i * cellsize + centreOfLeftBottomCell_Yaxis)  - cog_pos[1];
   }
 }
 
@@ -89,8 +92,8 @@ double getYEnergyFractions(double* yEnergy, double* yEnergyError,
   double cellsize = 38.3;
   int numb_xCells = 65; int numb_yCells = 48;
 
-  int x_column = (cog_pos[0] - (-1206.45 - 19.15)) / cellsize;
-  double x_pos = x_column * cellsize - 1206.45;
+  int x_column = (cog_pos[0] - (+ centreOfLeftBottomCell_Xaxis - 19.15)) / cellsize;
+  double x_pos = x_column * cellsize + centreOfLeftBottomCell_Xaxis;
 
   cout << x_column << " " << x_pos << '\n';
 
@@ -101,7 +104,7 @@ double getYEnergyFractions(double* yEnergy, double* yEnergyError,
     int zaehler = 0;
     for(int j = 0; j < x.size(); j++)
     {
-      if(fabs(x[j] - x_pos) < 2.5 && fabs((- 900.05 + i*cellsize) - y[j]) < 2.5)
+      if(fabs(x[j] - x_pos) < 2.5 && fabs((+ centreOfLeftBottomCell_Yaxis + i*cellsize) - y[j]) < 2.5)
       {
         yEnergy[i] += E[j];
         yEnergyError[i] += sigmaE(E[j]);
@@ -124,8 +127,8 @@ double getXEnergyFractions(double* xEnergy, double* xEnergyError,
   int numb_xCells = 65; int numb_yCells = 48;
 
 
-  int y_row = (cog_pos[1] - (-900.05 - 19.15)) / cellsize;
-  double y_pos = y_row * cellsize - 900.05;
+  int y_row = (cog_pos[1] - (+ centreOfLeftBottomCell_Yaxis - 19.15)) / cellsize;
+  double y_pos = y_row * cellsize + centreOfLeftBottomCell_Yaxis;
 
 
 
@@ -137,7 +140,7 @@ double getXEnergyFractions(double* xEnergy, double* xEnergyError,
     int zaehler = 0;
     for(int j = 0; j < x.size(); j++)
     {
-      if(fabs(y[j] - y_pos) < 2.5 && fabs((-1206.45 + i*cellsize) - x[j]) < 2.5)
+      if(fabs(y[j] - y_pos) < 2.5 && fabs((+ centreOfLeftBottomCell_Xaxis + i*cellsize) - x[j]) < 2.5)
       {
         //cout << E_norm[j] << '\n';
         xEnergy[i] += E[j];

@@ -8,7 +8,7 @@
 #include "Math/Functor.h"
 #include "Math/Minimizer.h"
 #include "Math/MinimizerOptions.h"
-#include "fit_functions.h"
+#include "fit_functions.h" 
 #include "fitvalidation.h"
 
 int degreesOfFreedom(vector <double> , int);
