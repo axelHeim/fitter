@@ -73,12 +73,14 @@ void calculateCentreOfGrav(vector<double> E, vector<double> x, vector<double> y,
 
 
 
-double sigmaE(double energy)//aus Fig.49 compassSetupForPhysicsWithHadronBeams, ohne 2ten term
+double sigmaE(double E)//from coral option file
  {
-  double c1 = 0.055;
+  double c1 = 0.15;
   double c2 = 0.015;
+  double c3 = 0.05;
 
-  double sigmaE = c1 * sqrt(energy) + c2 * energy;
+
+  double sigmaE = sqrt(c1*c1*E + c2*c2*E*E + c3*c3);
   return sigmaE;
 }
 
@@ -137,6 +139,19 @@ double chisquare_old(double totalEnergyDeposit, vector<double> E, vector<double>
       E_calc_norm = energyDeposition(x[i],y[i],cog_pos,args);
       chisquare += pow((E[i] - E_calc_norm*totalEnergyDeposit),2)/pow(sigmaE(E[i]),2);
   }
+
+  return chisquare;
+}
+
+double chisquare_cell(double totalEnergyDeposit, double E, double x, double y,
+                double cog_pos[2],const double args[5])
+{
+  double E_calc_norm;
+  double chisquare = 0;
+
+
+  E_calc_norm = energyDeposition(x,y,cog_pos,args);
+  chisquare += pow((E - E_calc_norm*totalEnergyDeposit),2)/pow(sigmaE(E),2);
 
   return chisquare;
 }

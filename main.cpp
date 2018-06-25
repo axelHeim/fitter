@@ -10,6 +10,8 @@
 #include "Math/MinimizerOptions.h"
 #include "fit_functions.h"
 #include "fitvalidation.h"
+#include "TH2D.h"
+#include <TFile.h>
 
 int degreesOfFreedom(vector <double> , int);
 
@@ -46,7 +48,7 @@ int main(){
     file.close();                // Datei wieder schließen
 
 
- 
+
     double totalEnergyDeposit;
     for(int j = 0; j < E.size(); j++)
     {
@@ -69,16 +71,16 @@ int main(){
     ROOT::Math::Minimizer *min =
         ROOT::Math::Factory::CreateMinimizer("Minuit2", "Migrad");
     min->SetMaxFunctionCalls(10000); // if one wants a max calls default=420?
-    min->SetTolerance(0.001);
+    min->SetTolerance(0.1);
     min->SetPrintLevel(2);
     ROOT::Math::Functor f =
         ROOT::Math::Functor(chisquare_result, numbOfArguments); // function of type double
     min->SetFunction(f);
-    min->SetVariable(0, "a1", 1.01, 1e-5);
-    min->SetVariable(1, "b1", 3.0, 1e-5);
+    min->SetVariable(0, "a1", 0.8, 1e-5);
+    min->SetVariable(1, "b1", 8.0, 1e-5);
     min->SetVariable(2, "a2", -0.05, 1e-5);
-    min->SetVariable(3, "b2", +2.0, 1e-5);
-    min->SetVariable(4, "b3", +200.0, 1e-5);
+    min->SetVariable(3, "b2", 200.0, 1e-5);
+    min->SetVariable(4, "b3", 80.0, 1e-5);
     min->Minimize();
 
     const double args[numbOfArguments] = {min->X()[0],min->X()[1],min->X()[2],min->X()[3],min->X()[4]};
@@ -87,9 +89,24 @@ int main(){
     fit_validation(E,x,y,xy_CoG,args, numbEvents);
     cout << xy_CoG[0] << " " << xy_CoG[1] << '\n';
 
-    cout << "number of degrees of freedom (ndf): " << degreesOfFreedom(E, numbOfArguments) << '\n';
+    int ndf = degreesOfFreedom(E, numbOfArguments);
+    cout << "number of degrees of freedom (ndf): " << ndf << '\n';
     //cout << chisquare_old(totalEnergyDeposit, E,x,y, xy_CoG, args) << '\n';
     cout << "chi2/ndf: " << chisquare_old(totalEnergyDeposit, E,x,y, xy_CoG, args)/degreesOfFreedom(E, numbOfArguments) << '\n';
+
+
+
+    TFile file1("rootPlotsFitter.root", "RECREATE");
+    TH2D *histo_xy_chi2_contribution;
+    histo_xy_chi2_contribution =
+        new TH2D("xy_chi2/ndf_contribution", "xy_chi2/ndf_contribution", 65, -1225.6, 1263.9, 48,
+                 -919.2, 919.2);
+
+    for(uint j = 0; j < E.size(); j++)
+    {histo_xy_chi2_contribution->Fill(x[j], y[j],
+                      chisquare_cell(totalEnergyDeposit, E[j], x[j], y[j], xy_CoG, args)/ndf);}
+    //histo_xy_chi2_contribution->Scale(scaleFactor);
+    histo_xy_chi2_contribution->Write();
 
 
   return 0;

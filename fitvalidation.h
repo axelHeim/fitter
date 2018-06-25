@@ -122,7 +122,7 @@ double getYEnergyFractions(double* yEnergy, double* yEnergyError,
     }
   }
   return x_column;
-}
+} 
 
 
 double getXEnergyFractions(double* xEnergy, double* xEnergyError,
